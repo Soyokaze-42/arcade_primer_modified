@@ -20,16 +20,14 @@ class FlyingSprite(arcade.Sprite):
     Flying sprites include enemies and clouds
     """
 
-    def update(self):
+    def on_update(self, delta_time: float = 1 / 60):
         """Update the position of the sprite
         When it moves off screen to the left, remove it
         """
+        self.center_x = int(self.center_x + self.change_x * delta_time)
+        self.center_y = int(self.center_y + self.change_y * delta_time)
 
-        # Move the sprite
-        # super().update()
-
-        # Remove us if we're off screen
-        if self.right < 0:
+        if self.center_x <= 0:
             self.remove_from_sprite_lists()
 
 
@@ -71,7 +69,7 @@ class SpaceShooter(arcade.Window):
             self.all_sprites.append(cloud)
 
         # Setup the player
-        self.player = arcade.Sprite("images/jet.png", SCALING)
+        self.player = FlyingSprite("images/jet.png", SCALING)
         self.player.center_y = self.height / 2
         self.player.left = 10
         self.all_sprites.insert(0, self.player)
@@ -312,10 +310,10 @@ class SpaceShooter(arcade.Window):
             arcade.play_sound(self.collision_sound)
 
         # Update everything
-        for sprite in self.all_sprites:
-            sprite.center_x = int(sprite.center_x + sprite.change_x * delta_time)
-            sprite.center_y = int(sprite.center_y + sprite.change_y * delta_time)
-        self.all_sprites.update()
+        # for sprite in self.all_sprites:
+        #    sprite.center_x = int(sprite.center_x + sprite.change_x * delta_time)
+        #    sprite.center_y = int(sprite.center_y + sprite.change_y * delta_time)
+        self.all_sprites.on_update(delta_time)
 
         # Keep the player on screen
         if self.player.top > self.height:
